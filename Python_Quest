@@ -1,0 +1,109 @@
+#"Python Quest: The Enchanted Forest"
+
+import random
+
+def introduction():
+    print("Welcome to Python Quest: The Enchanted Forest!")
+    print("You find yourself at the edge of a mysterious forest.")
+    print("Your goal is to reach the treasure at the heart of the forest.")
+    print("But beware, dangers and challenges await!\n")
+
+def get_player_name():
+    return input("What is your name, brave adventurer? ")
+
+def make_choice(options):
+    print("Choose your action:")
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+    
+    while True:
+        try:
+            choice = int(input("Enter the number of your choice: "))
+            if 1 <= choice <= len(options):
+                return choice
+            else:
+                print("Invalid choice. Try again.")
+        except ValueError:
+            print("Please enter a number.")
+
+def forest_encounter():
+    encounters = [
+        "You encounter a friendly squirrel.",
+        "You find a clear stream.",
+        "You see strange glowing mushrooms.",
+        "You hear distant whispers in the trees."
+    ]
+    return random.choice(encounters)
+
+def solve_riddle():
+    riddles = [
+        ("I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?", "echo"),
+        ("The more you take, the more you leave behind. What am I?", "footsteps"),
+        ("What has keys, but no locks; space, but no room; you can enter, but not go in?", "keyboard")
+    ]
+    riddle, answer = random.choice(riddles)
+    print("\nTo proceed, you must solve this riddle:")
+    print(riddle)
+    
+    attempts = 3
+    while attempts > 0:
+        guess = input("Your answer: ").lower()
+        if guess == answer:
+            print("Correct! The path ahead clears.")
+            return True
+        else:
+            attempts -= 1
+            if attempts > 0:
+                print(f"Incorrect. You have {attempts} attempts left.")
+            else:
+                print(f"Sorry, you're out of attempts. The correct answer was '{answer}'.")
+                return False
+
+def main_game(player_name):
+    print(f"\n{player_name}, your journey begins!")
+    
+    health = 100
+    distance = 0
+    goal = 5
+    
+    while distance < goal and health > 0:
+        print(f"\nHealth: {health}  |  Progress: {distance}/{goal}")
+        print(forest_encounter())
+        
+        choice = make_choice(["Move forward", "Rest", "Check surroundings"])
+        
+        if choice == 1:  # Move forward
+            distance += 1
+            health -= random.randint(5, 15)
+            print("You press on through the forest.")
+            if random.random() < 0.3:  # 30% chance of riddle
+                if not solve_riddle():
+                    health -= 20
+        elif choice == 2:  # Rest
+            health_gain = random.randint(10, 20)
+            health = min(100, health + health_gain)
+            print(f"You rest and recover {health_gain} health.")
+        else:  # Check surroundings
+            if random.random() < 0.5:
+                print("You find some berries and gain 10 health!")
+                health = min(100, health + 10)
+            else:
+                print("You find nothing of interest.")
+    
+    if health <= 0:
+        print(f"\nOh no! {player_name}, your health has depleted. Game Over!")
+    else:
+        print(f"\nCongratulations, {player_name}! You've reached the heart of the forest and found the treasure!")
+
+if __name__ == "__main__":
+    introduction()
+    player_name = get_player_name()
+    main_game(player_name)
+    
+    play_again = input("Would you like to play again? (yes/no): ").lower()
+    while play_again == 'yes':
+        main_game(player_name)
+        play_again = input("Would you like to play again? (yes/no): ").lower()
+    
+    print("Thank you for playing Python Quest!")
+
